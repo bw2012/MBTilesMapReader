@@ -13,5 +13,7 @@
 
 @property (strong, nonatomic) IBOutlet MKMapView *mapView;
 
+- (void)resetRender;
+
 @end
 

@@ -20,9 +20,9 @@
 
 -(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     [super drawMapRect:mapRect zoomScale:zoomScale inContext:context];
-    CGRect rect = [self rectForMapRect:mapRect];
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:arc4random()%255/255. green:arc4random()%255/255. blue:arc4random()%255/255. alpha:0.2].CGColor);
-    CGContextFillRect(context, rect);
+    //CGRect rect = [self rectForMapRect:mapRect];
+    //CGContextSetFillColorWithColor(context, [UIColor colorWithRed:arc4random()%255/255. green:arc4random()%255/255. blue:arc4random()%255/255. alpha:0.2].CGColor);
+    //CGContextFillRect(context, rect);
 }
 
 @end
@@ -32,7 +32,7 @@
 @end
 
 @implementation MBTilesMapViewController{
- 
+    MKTileOverlayRenderer* render;
 }
 
 - (void)viewDidLoad {
@@ -50,9 +50,14 @@
     }
 }
 
+- (void)resetRender {
+    [render reloadData];
+}
+
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id)overlay {
     if ([overlay isKindOfClass:[MKTileOverlay class]]) {
-        return [[WatermarkTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        render = [[WatermarkTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        return render;
     }
     
     return nil;
