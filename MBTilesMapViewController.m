@@ -11,6 +11,21 @@
 #include <sqlite3.h>
 #import "AppDelegate.h"
 
+@interface WatermarkTileOverlayRenderer : MKTileOverlayRenderer
+
+@end
+
+
+@implementation WatermarkTileOverlayRenderer
+
+-(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
+    [super drawMapRect:mapRect zoomScale:zoomScale inContext:context];
+    CGRect rect = [self rectForMapRect:mapRect];
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:arc4random()%255/255. green:arc4random()%255/255. blue:arc4random()%255/255. alpha:0.2].CGColor);
+    CGContextFillRect(context, rect);
+}
+
+@end
 
 @interface MBTilesMapViewController ()
 
@@ -37,7 +52,7 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id)overlay {
     if ([overlay isKindOfClass:[MKTileOverlay class]]) {
-        return [[MKTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        return [[WatermarkTileOverlayRenderer alloc] initWithTileOverlay:overlay];
     }
     
     return nil;

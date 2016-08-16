@@ -28,16 +28,32 @@
 
 @implementation TileOverlay{
     sqlite3_stmt *compiledStatement;
+    NSData* blank_data;
+}
+
+- (id)init {
+    CGSize size = CGSizeMake(128, 128);
+    UIGraphicsBeginImageContextWithOptions(size, YES, 0);
+    [[UIColor whiteColor] setFill];
+    UIRectFill(CGRectMake(0, 0, size.width, size.height));
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    blank_data = UIImagePNGRepresentation(image);
+    UIGraphicsEndImageContext();
+    
+    return [super init];
 }
 
 
 - (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result {   
-    NSData *data = [self getBlob:path.z tile_column:path.x tile_row:path.y];
-    if(data == Nil){
-        NSLog(@"tile not found -> %d %d %d", path.z, path.x, path.y);
+    NSData* data = [self getBlob:path.z tile_column:path.x tile_row:path.y];
+    NSError* error = nil;
+    if(data == Nil) {
+        //NSLog(@"tile not found -> %d %d %d", path.z, path.x, path.y);
+        data = nil;
+        error = [NSError errorWithDomain:@"test" code:200 userInfo:@{@"Error reason": @"Tile not found"}];
     }
     
-    result(data, nil);
+    result(data, error);
 }
 
 - (void)openMbtilesData {
