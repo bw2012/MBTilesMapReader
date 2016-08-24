@@ -11,18 +11,23 @@
 #include <sqlite3.h>
 #import "AppDelegate.h"
 
-@interface WatermarkTileOverlayRenderer : MKTileOverlayRenderer
+#define MBTILES_DEBUG NO
+
+@interface TileOverlayRenderer : MKTileOverlayRenderer
 
 @end
 
 
-@implementation WatermarkTileOverlayRenderer
+@implementation TileOverlayRenderer
 
 -(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     [super drawMapRect:mapRect zoomScale:zoomScale inContext:context];
-    //CGRect rect = [self rectForMapRect:mapRect];
-    //CGContextSetFillColorWithColor(context, [UIColor colorWithRed:arc4random()%255/255. green:arc4random()%255/255. blue:arc4random()%255/255. alpha:0.2].CGColor);
-    //CGContextFillRect(context, rect);
+    
+    if(MBTILES_DEBUG){
+        CGRect rect = [self rectForMapRect:mapRect];
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:arc4random()%255/255. green:arc4random()%255/255. blue:arc4random()%255/255. alpha:0.2].CGColor);
+        CGContextFillRect(context, rect);
+    }
 }
 
 @end
@@ -56,7 +61,7 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id)overlay {
     if ([overlay isKindOfClass:[MKTileOverlay class]]) {
-        render = [[WatermarkTileOverlayRenderer alloc] initWithTileOverlay:overlay];
+        render = [[TileOverlayRenderer alloc] initWithTileOverlay:overlay];
         return render;
     }
     
